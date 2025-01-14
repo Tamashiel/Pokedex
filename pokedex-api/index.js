@@ -1,95 +1,121 @@
 import dotenv from "dotenv";
-dotenv.config(); //carga las variables de entorno desde el archivo .env
-//-------------
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
-import { leerPokemon,crearPokemon,borrarPokemon,editarPokemon } from "./db.js";
+import multer from 'multer';
+import path from 'path';
+import { leerPokemon, crearPokemon, borrarPokemon, editarPokemon } from "./db.js";
 
 const servidor = express();
 
-// Para permitir solicitudes desde distintos dominios
-servidor.use(cors()); 
+// 🌐 Permitir solicitudes desde distintos dominios
+servidor.use(cors());
+servidor.use(express.json());
 
-// Analiza el cuerpo de las solicitudes como JSON
-servidor.use(express.json()); 
+// 📂 Servir archivos estáticos (para acceder a las imágenes desde el navegador)
+servidor.use("/uploads", express.static("public/uploads"));
 
-//Ruta para leer los Pokémon de la base de datos
-servidor.get("/pokemon", async (peticion,respuesta) => {
-    try{
-        let pokemons = await leerPokemon();
-
-        respuesta.json(pokemons);
-
-    }catch(error){
-
-        respuesta.status(500);
-
-        respuesta.json({ error : "Error en el servidor al obtener los Pokémon" });
-
+// 📸 Configurar Multer para manejar imágenes
+const almacenamiento = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads');
+    },
+    filename: function (req, file, cb) {
+        const nombreUnico = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, nombreUnico + path.extname(file.originalname));
     }
 });
 
-// Ruta para crear nuevos Pokémon
-servidor.post("/pokemon", async (peticion,respuesta,siguiente) => {
-    let { nombre, tipo, posicion } = peticion.body; // Extraer nombre, tipo y posición del cuerpo de la solicitud
-
-    if(!nombre || !tipo || typeof posicion === "undefined") { // Si falta alguno de los campos obligatorios, pasa al siguiente middleware
-        return siguiente(true); 
+// ✅ Validar que solo se suban imágenes
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Solo se permiten imágenes'), false);
     }
+};
 
+// ✅ Configuración única de Multer
+const upload = multer({ storage: almacenamiento, fileFilter });
+
+// 📥 Ruta para crear Pokémon con imagen
+servidor.post("/pokemon", upload.single('imagen'), async (req, res) => {
     try {
-        let id = await crearPokemon({ nombre, tipo, posicion }); // Crear el Pokémon en la base de datos
+        const { nombre, tipo, posicion } = req.body;
+        const imagen = req.file ? `/uploads/${req.file.filename}` : null;
 
-        respuesta.json({ id });
+        if (!nombre || !tipo || !posicion) {
+            return res.status(400).json({ error: "Faltan datos obligatorios." });
+        }
 
-    }catch(error) {
-        respuesta.status(500).json({ error : "Error en el servidor al crear el Pokémon" });
-    }
-});
-
-//Ruta para eliminar pokémon de la base de datos
-servidor.delete("/pokemon/borrar/:id([0-9a-f]{24})", async (peticion, respuesta) => {
-    try {
-        let { id } = peticion.params;  // Extraer el ID de los parámetros de la solicitud
-
-        let cantidad = await borrarPokemon(id);  // Llamar a la función para borrar el Pokémon
-
-        respuesta.json({ resultado: cantidad ? "ok" : "ko" });  // Responder con un mensaje de éxito o error
+        const id = await crearPokemon({ nombre, tipo, posicion, imagen });
+        res.status(201).json({ id });
 
     } catch (error) {
-        respuesta.status(500).json({ error: "Error en el servidor al eliminar el Pokémon" });
+        console.error("❌ Error al crear el Pokémon:", error);
+        res.status(500).json({ error: "Error en el servidor al crear el Pokémon." });
     }
 });
 
-//Ruta para editar los Pokémon que ya se encuentran en la base de datos.
+// ✏️ Ruta para actualizar Pokémon (incluye actualización de imagen)
+servidor.put("/pokemon/actualizar/:id([0-9a-f]{24})", upload.single('imagen'), async (req, res) => {
+    const { id } = req.params;
+    const { nombre, tipo, posicion } = req.body;
+    const imagen = req.file ? `/uploads/${req.file.filename}` : null;
 
-servidor.put("/pokemon/actualizar/:id([0-9a-f]{24})", async (peticion, respuesta, siguiente) => {
-    let { id } = peticion.params;  // Extraer el ID del Pokémon a actualizar desde los parámetros
-    let { nombre, tipo } = peticion.body;  // Extraer los datos de nombre y tipo del cuerpo de la solicitud
-
-    if (!nombre && !tipo) {
-        return siguiente(true);  // Si no se proporciona ningún dato para actualizar, pasa al siguiente middleware
-    }
+    // ✅ Solo actualizar campos que fueron proporcionados
+    const nuevosDatos = {
+        ...(nombre && { nombre }),
+        ...(tipo && { tipo }),
+        ...(posicion && { posicion }),
+        ...(imagen && { imagen }),
+    };
 
     try {
-        let cantidad = await editarPokemon(id, { nombre, tipo });  // Actualizar el Pokémon en la base de datos
-        respuesta.json({ resultado: cantidad ? "ok" : "ko" });  // Responder con un mensaje de éxito o error
+        const resultado = await editarPokemon(id, nuevosDatos);
+        res.json({ resultado: resultado ? "ok" : "ko" });
     } catch (error) {
-        respuesta.status(500).json({ error: "Error en el servidor al editar el Pokémon" });
+        console.error("❌ Error al actualizar el Pokémon:", error);
+        res.status(500).json({ error: "Error al actualizar el Pokémon" });
     }
 });
 
-// Middleware para manejar errores
-servidor.use((error, peticion, respuesta, siguiente) => {
-    respuesta.status(400).json({ error: "Error en la solicitud" });
+// 📖 Ruta para leer los Pokémon
+servidor.get("/pokemon", async (req, res) => {
+    try {
+        const pokemons = await leerPokemon();
+        res.json(pokemons);
+    } catch (error) {
+        res.status(500).json({ error: "Error en el servidor al obtener los Pokémon" });
+    }
 });
 
-// Middleware para manejar recursos no encontrados
-servidor.use((peticion, respuesta) => {
-    respuesta.status(404).json({ error: "Recurso no encontrado" });
+// ❌ Ruta para eliminar Pokémon
+servidor.delete("/pokemon/borrar/:id([0-9a-f]{24})", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const cantidad = await borrarPokemon(id);
+        res.json({ resultado: cantidad ? "ok" : "ko" });
+    } catch (error) {
+        res.status(500).json({ error: "Error en el servidor al eliminar el Pokémon" });
+    }
 });
 
-// Iniciar el servidor en el puerto definido en las variables de entorno
+// ⚠️ Middleware para manejar errores
+servidor.use((error, req, res, next) => {
+    console.error("❌ Error:", error.message);
+    res.status(400).json({ error: error.message });
+});
+
+// ⚠️ Middleware para manejar recursos no encontrados
+servidor.use((req, res) => {
+    res.status(404).json({ error: "Recurso no encontrado" });
+});
+
+// 🚀 Iniciar el servidor
 servidor.listen(process.env.PORT || 4000, () => {
     console.log(`Servidor corriendo en http://localhost:${process.env.PORT || 4000}`);
 });
+
+

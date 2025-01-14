@@ -60,3 +60,24 @@ export const borrarPokemon = async (id) => {
         throw error;
     }
 };
+
+export const editarPokemon = async (id, formData) => {
+    try {
+        const response = await fetch(`http://localhost:4000/pokemon/actualizar/${id}`, {
+            method: "PUT",
+            body: formData,  // ✅ Enviar FormData
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al editar el Pokémon");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error al editar el Pokémon:", error);
+    }
+};
+
+
+
+

@@ -40,30 +40,38 @@ export function leerPokemon(){
     });
 }
 
-export function crearPokemon(pokemon){
-    return new Promise( async (ok,ko) => {
+export function crearPokemon(pokemon) {
+    return new Promise(async (resolve, reject) => {
         let conexion = null;
 
-        try{
+        try {
             conexion = await conectar();
             let coleccion = conexion.db("pokedex").collection("pokemons");
 
-            let { nombre, tipo, posicion , imagen } = pokemon;
+            let { nombre, tipo, posicion, imagen } = pokemon;
 
-            let { insertedId } = await coleccion.insertOne({nombre, tipo, posicion, imagen});
+            // Validación
+            imagen = imagen && imagen.trim() !== "" ? imagen : null;
 
-            ok(insertedId);
+            let { insertedId } = await coleccion.insertOne({ nombre, tipo, posicion, imagen });
 
-        }catch(error){
-            ko({ error : "Error al crear el Pokémon" });
+            console.log("✅ Pokémon creado con ID:", insertedId);
+            resolve(insertedId);
 
-        }finally{
-            if(conexion){ //Verifico que la conexion no sea nula.
+        } catch (error) {
+            console.error("❌ Error al crear el Pokémon:", error);
+            reject({ error: "Error al crear el Pokémon" });
+
+        } finally {
+            if (conexion) {
                 conexion.close();
             }
         }
     });
 }
+
+
+
 
 export function borrarPokemon(id) {
     return new Promise(async (ok, ko) => {
