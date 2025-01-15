@@ -2,23 +2,25 @@ import React, { useEffect, useState } from "react";
 import { obtenerPokemons, borrarPokemon, editarPokemon } from "../api";
 import PokemonCard from "./PokemonCard";
 
-const PokemonList = () => {
+const PokemonList = ({ actualizar }) => {
     const [pokemons, setPokemons] = useState([]);
 
     useEffect(() => {
         const fetchPokemons = async () => {
             try {
                 const data = await obtenerPokemons();
-                setPokemons(data);
+                //Ordenar por posición
+                const sortedData = data.sort((a, b) => a.posicion - b.posicion);
+                setPokemons(sortedData);
             } catch (error) {
                 console.error("Error al obtener los Pokémon:", error);
             }
         };
 
         fetchPokemons();
-    }, []);
+    }, [actualizar]);
 
-    // ✅ Eliminar Pokémon
+    //Eliminar Pokémon
     const handleDelete = async (id) => {
         try {
             await borrarPokemon(id);
@@ -28,11 +30,12 @@ const PokemonList = () => {
         }
     };
 
-    // ✅ Editar Pokémon incluyendo la imagen
+    // Editar Pokémon incluyendo la imagen
     const handleEdit = async (id, formData) => {
         try {
             await editarPokemon(id, formData);  // Enviamos FormData directamente
             const updatedPokemons = await obtenerPokemons();  // Recargamos la lista
+            const sortedPokemons = updatedPokemons.sort((a, b) => a.posicion - b.posicion); //Ordenar por posición
             setPokemons(updatedPokemons);
         } catch (error) {
             console.error("Error al editar el Pokémon:", error);
@@ -43,7 +46,7 @@ const PokemonList = () => {
     return (
         <div>
             <h2>Lista de Pokémon</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center", position: "sticky", top: "150px" }}>
                 {pokemons.map((pokemon) => (
                     <PokemonCard
                         key={pokemon.id}

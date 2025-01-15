@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const CreatePokemonForm = ({ onPokemonCreated }) => {
     const [nombre, setNombre] = useState("");
     const [tipo, setTipo] = useState("");
-    const [posicion, setPosicion] = useState("");
+    const [posicion, setPosicion] = useState(1);
     const [imagen, setImagen] = useState(null);
+    const fileInputRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (posicion < 1) {
+            alert("La posición debe ser un número mayor o igual a 1.");
+            return;
+        }
 
         const formData = new FormData();
         formData.append("nombre", nombre);
@@ -22,21 +28,31 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
             });
 
             if (response.ok) {
-                // ✅ Llama a la función para actualizar la lista
                 if (typeof onPokemonCreated === "function") {
                     onPokemonCreated();
                 }
 
-                // Limpiar el formulario
                 setNombre("");
                 setTipo("");
-                setPosicion("");
+                setPosicion(1);
                 setImagen(null);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
             } else {
                 alert("Error al crear el Pokémon");
             }
         } catch (error) {
             console.error("Error al crear el Pokémon:", error);
+        }
+    };
+
+    const handlePosicionChange = (e) => {
+        const value = e.target.value;
+        if (value === "" || parseInt(value) < 1) {
+            setPosicion(1);
+        } else {
+            setPosicion(parseInt(value));
         }
     };
 
@@ -71,7 +87,9 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
                     type="number"
                     placeholder="Posición"
                     value={posicion}
-                    onChange={(e) => setPosicion(e.target.value)}
+                    onChange={handlePosicionChange}
+                    min="1"
+                    step="1"
                     required
                 />
             </div>
@@ -82,6 +100,7 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setImagen(e.target.files[0])}
+                    ref={fileInputRef}
                     required
                 />
             </div>
@@ -92,16 +111,6 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
 };
 
 export default CreatePokemonForm;
-
-
-
-
-
-
-
-
-
-
 
 
 

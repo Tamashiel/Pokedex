@@ -5,7 +5,7 @@ import PokemonList from "./components/PokemonList";
 const App = () => {
     const [actualizar, setActualizar] = useState(false);
 
-    // ✅ Alternar el estado para forzar actualización
+    //Alternar el estado para forzar actualización
     const handlePokemonCreated = () => {
         setActualizar((prev) => !prev);  // Cambia el valor para activar useEffect
     };
@@ -18,12 +18,12 @@ const App = () => {
                 </header>
 
                 <section className="form-section">
-                    {/* 🔥 Pasamos la función correctamente */}
+                    {/*Pasamos la función correctamente */}
                     <CreatePokemonForm onPokemonCreated={handlePokemonCreated} />
                 </section>
 
                 <section className="list-section">
-                    {/* 📥 Pasamos el valor al listado */}
+                    {/*Pasamos el valor al listado */}
                     <PokemonList actualizar={actualizar} />
                 </section>
             </div>

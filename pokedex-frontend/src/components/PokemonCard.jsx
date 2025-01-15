@@ -7,8 +7,12 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
     const [posicion, setPosicion] = useState(pokemon.posicion);
     const [nuevaImagen, setNuevaImagen] = useState(null);
 
-    // ✅ Manejar guardado de cambios
     const handleGuardar = () => {
+        if (posicion < 1) {
+            alert("La posición debe ser un número mayor o igual a 1.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("nombre", nombre);
         formData.append("tipo", tipo);
@@ -21,6 +25,15 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
         if (typeof onEdit === "function") {
             onEdit(pokemon.id, formData);
             setModoEdicion(false);
+        }
+    };
+
+    const handlePosicionChange = (e) => {
+        const value = e.target.value;
+        if (value === "" || parseInt(value) < 1) {
+            setPosicion(1);
+        } else {
+            setPosicion(parseInt(value));
         }
     };
 
@@ -45,19 +58,17 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
                     <input
                         type="number"
                         value={posicion}
-                        onChange={(e) => setPosicion(e.target.value)}
+                        onChange={handlePosicionChange}
+                        min="1"
                         className="edit-input"
                         placeholder="Posición"
                     />
-                    
-                    {/* ✅ Permitir cambiar la imagen */}
                     <input
                         type="file"
                         accept="image/*"
                         onChange={(e) => setNuevaImagen(e.target.files[0])}
                         className="edit-file"
                     />
-
                     <div className="button-group">
                         <button onClick={handleGuardar} className="btn save-btn">Guardar</button>
                         <button onClick={() => setModoEdicion(false)} className="btn cancel-btn">Cancelar</button>
@@ -86,6 +97,7 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
 };
 
 export default PokemonCard;
+
 
 
 
