@@ -123,6 +123,10 @@ servidor.delete("/pokemon/borrar/:id([0-9a-f]{24})", async (req, res) => {
     }
 });
 
+servidor.get("/", (req, res) => {
+    res.send("🚀 ¡La API de Pokédex está funcionando!");
+});
+
 servidor.use((error, req, res, next) => {
     console.error("Error:", error.message);
     res.status(400).json({ error: error.message });
