@@ -10,6 +10,10 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { leerPokemon, crearPokemon, borrarPokemon, editarPokemon, obtenerPokemonPorId } from "./db.js";
 
+//Definir __dirname manualmente
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const servidor = express();
 
 servidor.use(cors({
@@ -29,11 +33,6 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
     console.log("📂 Carpeta 'uploads' creada.");
 }
-
-
-//Definir __dirname manualmente
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const almacenamiento = multer.diskStorage({
     destination: function (req, file, cb) {
