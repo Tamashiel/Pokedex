@@ -37,6 +37,15 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
         }
     };
 
+    {pokemon.imagen && (
+        <img
+            src={`${import.meta.env.VITE_API_URL}${pokemon.imagen}`}  // ✅ URL dinámica
+            alt={pokemon.nombre}
+            className="pokemon-image"
+        />
+    )}
+    
+
     return (
         <div className={`pokemon-card ${modoEdicion ? "edit-mode" : ""}`}>
             {modoEdicion ? (
