@@ -23,6 +23,8 @@ servidor.use(cors({
 }));
 
 servidor.use(express.json());
+servidor.use(express.urlencoded({ extended: true }));
+
 
 servidor.use("/uploads", express.static("public/uploads"));
 
@@ -96,11 +98,13 @@ servidor.put("/pokemon/actualizar/:id([0-9a-f]{24})", upload.single('imagen'), a
 servidor.get("/pokemon", async (req, res) => {
     try {
         const pokemons = await leerPokemon();
-        res.json(pokemons);
+        res.status(200).json(pokemons); 
     } catch (error) {
+        console.error("Error al obtener los Pokémon:", error);
         res.status(500).json({ error: "Error en el servidor al obtener los Pokémon" });
     }
 });
+
 
 servidor.delete("/pokemon/borrar/:id([0-9a-f]{24})", async (req, res) => {
     try {
@@ -133,9 +137,6 @@ servidor.delete("/pokemon/borrar/:id([0-9a-f]{24})", async (req, res) => {
     }
 });
 
-servidor.get("/", (req, res) => {
-    res.send("🚀 ¡La API de Pokédex está funcionando!");
-});
 
 servidor.use((error, req, res, next) => {
     console.error("Error:", error.message);

@@ -1,4 +1,3 @@
-// src/api.js
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -6,18 +5,23 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const obtenerPokemons = async () => {
     try {
         const response = await fetch(`${API_URL}/pokemon`);
-    
+        
+        // 🔍 Verificar qué responde el backend
+        const text = await response.text();
+        console.log("Respuesta del backend:", text);
+
         if (!response.ok) {
             throw new Error("Error al obtener los Pokémon");
         }
 
-        const data = await response.json();
+        const data = JSON.parse(text); 
         return data;
     } catch (error) {
-        console.error("Error al obtener los Pokémon", error);
+        console.error("Error al obtener los Pokémon:", error);
         throw error;
     }
 };
+
 
 // Crear un nuevo Pokémon
 export const crearPokemon = async (pokemon) => {
