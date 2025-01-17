@@ -7,6 +7,7 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
     const [posicion, setPosicion] = useState(pokemon.posicion);
     const [nuevaImagen, setNuevaImagen] = useState(null);
 
+    //Función para guardar cambios
     const handleGuardar = () => {
         if (posicion < 1) {
             alert("La posición debe ser un número mayor o igual a 1.");
@@ -28,6 +29,7 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
         }
     };
 
+    // Validar la posición para que sea mayor a 0
     const handlePosicionChange = (e) => {
         const value = e.target.value;
         if (value === "" || parseInt(value) < 1) {
@@ -36,15 +38,6 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
             setPosicion(parseInt(value));
         }
     };
-
-    {pokemon.imagen && (
-        <img
-            src={`${import.meta.env.VITE_API_URL}${pokemon.imagen}`}  // ✅ URL dinámica
-            alt={pokemon.nombre}
-            className="pokemon-image"
-        />
-    )}
-    
 
     return (
         <div className={`pokemon-card ${modoEdicion ? "edit-mode" : ""}`}>
@@ -86,15 +79,18 @@ const PokemonCard = ({ pokemon, onDelete, onEdit }) => {
             ) : (
                 <>
                     <h3>{pokemon.nombre}</h3>
+
                     {pokemon.imagen && (
                         <img
-                            src={`http://localhost:4000${pokemon.imagen}`}
+                            src={`${import.meta.env.VITE_API_URL}${pokemon.imagen}`}  
                             alt={pokemon.nombre}
                             className="pokemon-image"
                         />
                     )}
+
                     <p><strong>Tipo:</strong> {pokemon.tipo}</p>
                     <p><strong>Posición:</strong> {pokemon.posicion}</p>
+
                     <div className="button-group">
                         <button onClick={() => setModoEdicion(true)} className="btn edit-btn">Editar</button>
                         <button onClick={() => onDelete(pokemon.id)} className="btn delete-btn">Eliminar</button>

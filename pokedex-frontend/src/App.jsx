@@ -13,7 +13,7 @@ const App = () => {
     return (
         <div className="background-container">
             <div className="content-container">
-            <img src="/public/logo.png" alt="logo" className="logo" />
+            <img src="/logo.png" alt="logo" className="logo" />
                 <CreatePokemonForm onPokemonCreated={handlePokemonCreated} />
                 <PokemonList actualizar={actualizar} />
             </div>

@@ -5,12 +5,17 @@ import PokemonCard from "./PokemonCard";
 const PokemonList = ({ actualizar }) => {
     const [pokemons, setPokemons] = useState([]);
 
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     useEffect(() => {
         const fetchPokemons = async () => {
             try {
-                const data = await obtenerPokemons();
-                //Ordenar por posición
+                const response = await fetch(`${apiUrl}/pokemon`);
+                const data = await response.json();  
+
+                // Ordenar por posición
                 const sortedData = data.sort((a, b) => a.posicion - b.posicion);
+
                 setPokemons(sortedData);
             } catch (error) {
                 console.error("Error al obtener los Pokémon:", error);
@@ -18,7 +23,8 @@ const PokemonList = ({ actualizar }) => {
         };
 
         fetchPokemons();
-    }, [actualizar]);
+    }, [actualizar]); 
+
 
     //Eliminar Pokémon
     const handleDelete = async (id) => {
