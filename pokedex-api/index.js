@@ -20,7 +20,7 @@ servidor.use(express.json());
 
 servidor.use("/uploads", express.static("public/uploads"));
 
-// 🔧 Definir __dirname manualmente
+//Definir __dirname manualmente
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
