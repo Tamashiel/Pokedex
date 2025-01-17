@@ -12,7 +12,11 @@ import { leerPokemon, crearPokemon, borrarPokemon, editarPokemon, obtenerPokemon
 
 const servidor = express();
 
-servidor.use(cors());
+const cors = require('cors');
+servidor.use(cors({
+    origin: process.env.FRONTEND_URL || '*'
+}));
+
 servidor.use(express.json());
 
 servidor.use("/uploads", express.static("public/uploads"));
