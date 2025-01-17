@@ -6,7 +6,7 @@ export const obtenerPokemons = async () => {
     try {
         const response = await fetch(`${API_URL}/pokemon`);
         
-        // 🔍 Verificar qué responde el backend
+        //Verificar qué responde el backend
         const text = await response.text();
         console.log("Respuesta del backend:", text);
 
