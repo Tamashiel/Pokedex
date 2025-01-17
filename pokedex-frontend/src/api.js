@@ -78,6 +78,18 @@ export const editarPokemon = async (id, formData) => {
     }
 };
 
+//Conectar con el backend para que Render funcione
+const apiUrl = process.env.REACT_APP_API_URL;
 
+export const obtenerPokemones = async () => {
+    try {
+        const response = await fetch(`${apiUrl}/pokemon`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error al obtener los Pokémon:", error);
+        return [];
+    }
+};
 
 
