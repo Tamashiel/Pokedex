@@ -3,6 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 // Obtener todos los Pokémon
 export const obtenerPokemons = async () => {
+    console.log("Petición 2 a:", `${API_URL}/pokemon`);
     try {
         const response = await fetch(`${API_URL}/pokemon`);
         
@@ -11,7 +12,7 @@ export const obtenerPokemons = async () => {
         console.log("Respuesta del backend:", text);
 
         if (!response.ok) {
-            throw new Error("Error al obtener los Pokémon");
+            throw new Error("Error al obtener los Pokémon, response not ok");
         }
 
         const data = JSON.parse(text); 

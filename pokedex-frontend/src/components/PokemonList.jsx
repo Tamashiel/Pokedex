@@ -8,6 +8,7 @@ const PokemonList = ({ actualizar }) => {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
+        console.log("Petición 1 a:", `${apiUrl}/pokemon`);
         const fetchPokemons = async () => {
             try {
                 const response = await fetch(`${apiUrl}/pokemon`);
@@ -18,7 +19,7 @@ const PokemonList = ({ actualizar }) => {
 
                 setPokemons(sortedData);
             } catch (error) {
-                console.error("Error al obtener los Pokémon:", error);
+                console.error("Error al obtener los Pokémon (useEffect):", error);
             }
         };
 
