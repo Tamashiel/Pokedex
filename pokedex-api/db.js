@@ -11,18 +11,21 @@ export function leerPokemon() {
     return new Promise(async (ok, ko) => {
         let conexion = null;
         try {
+            console.log("Conectando a la base de datos...");
             conexion = await conectar();
             let coleccion = conexion.db("pokedex").collection("pokemons");
 
             let pokemons = await coleccion.find({}).toArray();
 
-            pokemons = pokemons.map(({ _id, nombre, tipo, posicion, imagen }) => ({
-                id: _id,
-                nombre,
-                tipo,
-                posicion,
-                imagen
-            }));
+            pokemons = pokemons.map(({ _id, nombre, tipo, posicion, imagen}) => {
+                return {
+                    id: _id,
+                    nombre,
+                    tipo,
+                    posicion,
+                    imagen
+                }
+            });
 
             ok(pokemons);
         } catch (error) {

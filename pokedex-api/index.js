@@ -16,14 +16,9 @@ const __dirname = dirname(__filename);
 
 const servidor = express();
 
-servidor.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type']
-}));
+servidor.use(cors());
 
 servidor.use(express.json());
-servidor.use(express.urlencoded({ extended: true }));
 
 
 servidor.use("/uploads", express.static("public/uploads"));
