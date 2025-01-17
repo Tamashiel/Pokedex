@@ -13,12 +13,23 @@ import { leerPokemon, crearPokemon, borrarPokemon, editarPokemon, obtenerPokemon
 const servidor = express();
 
 servidor.use(cors({
-    origin: process.env.FRONTEND_URL || '*'
+    origin: process.env.FRONTEND_URL || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
 }));
 
 servidor.use(express.json());
 
 servidor.use("/uploads", express.static("public/uploads"));
+
+//Asegura la existencia de la carpeta Uploads
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log("📂 Carpeta 'uploads' creada.");
+}
+
 
 //Definir __dirname manualmente
 const __filename = fileURLToPath(import.meta.url);

@@ -7,17 +7,16 @@ function conectar(){
     return MongoClient.connect(process.env.MONGO_URL)
 }
 
-export function leerPokemon(){
-    return new Promise (async (ok, ko) => {
+export function leerPokemon() {
+    return new Promise(async (ok, ko) => {
         let conexion = null;
-
-        try{
+        try {
             conexion = await conectar();
             let coleccion = conexion.db("pokedex").collection("pokemons");
-            
-            let pokemons = await coleccion.find({}).toArray(); 
 
-            pokemons = pokemons.map(({_id,nombre,tipo, posicion, imagen}) => ({
+            let pokemons = await coleccion.find({}).toArray();
+
+            pokemons = pokemons.map(({ _id, nombre, tipo, posicion, imagen }) => ({
                 id: _id,
                 nombre,
                 tipo,
@@ -26,16 +25,16 @@ export function leerPokemon(){
             }));
 
             ok(pokemons);
-
-        }catch(error){
+        } catch (error) {
             ko({ error: "Error al leer la base de datos" });
-        }finally{
-            if(conexion){
+        } finally {
+            if (conexion) {
                 conexion.close();
             }
         }
     });
 }
+
 
 export function crearPokemon(pokemon) {
     return new Promise(async (resolve, reject) => {
@@ -57,7 +56,6 @@ export function crearPokemon(pokemon) {
         } catch (error) {
             console.error("❌ Error al crear el Pokémon:", error);
             reject({ error: "Error al crear el Pokémon" });
-
         } finally {
             if (conexion) {
                 conexion.close();
@@ -65,6 +63,7 @@ export function crearPokemon(pokemon) {
         }
     });
 }
+
 
 export function borrarPokemon(id) {
     return new Promise(async (ok, ko) => {
