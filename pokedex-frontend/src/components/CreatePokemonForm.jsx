@@ -7,6 +7,8 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
     const [imagen, setImagen] = useState(null);
     const fileInputRef = useRef(null);
 
+    const API_URL = import.meta.env.VITE_API_URL;  // ✅ Variable de entorno para la URL del backend
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -22,16 +24,17 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
         formData.append("imagen", imagen);
 
         try {
-            const response = await fetch("http://localhost:4000/pokemon", {
+            const response = await fetch(`${API_URL}/pokemon`, {  
                 method: "POST",
                 body: formData,
             });
 
             if (response.ok) {
                 if (typeof onPokemonCreated === "function") {
-                    onPokemonCreated();
+                    onPokemonCreated();  // Refresca la lista si se creó correctamente
                 }
 
+                // Limpiar el formulario
                 setNombre("");
                 setTipo("");
                 setPosicion(1);
@@ -40,16 +43,16 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
                     fileInputRef.current.value = "";
                 }
             } else {
-                alert("Error al crear el Pokémon");
+                alert("❌ Error al crear el Pokémon");
             }
         } catch (error) {
-            console.error("Error al crear el Pokémon:", error);
+            console.error("❌ Error al crear el Pokémon:", error);
         }
     };
 
     const handlePosicionChange = (e) => {
         const value = e.target.value;
-        // Permitir el campo vacío o valores numéricos mayores o iguales a 1
+        // Permitir solo números mayores o iguales a 1
         if (value === "" || /^[0-9]*$/.test(value)) {
             setPosicion(value);
         }
@@ -59,6 +62,7 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
         <div className="form-container">
             <form onSubmit={handleSubmit} className="pokemon-form">
                 <h2>Agregar un Pokémon</h2>
+
                 <div className="form-group">
                     <label>Nombre</label>
                     <input
@@ -112,6 +116,7 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
 };
 
 export default CreatePokemonForm;
+
 
 
 

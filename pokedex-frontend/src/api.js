@@ -1,6 +1,6 @@
 // src/api.js
 
-const API_URL = "http://localhost:4000"; // Asegúrate de que el puerto sea correcto
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Obtener todos los Pokémon
 export const obtenerPokemons = async () => {
@@ -63,9 +63,9 @@ export const borrarPokemon = async (id) => {
 
 export const editarPokemon = async (id, formData) => {
     try {
-        const response = await fetch(`http://localhost:4000/pokemon/actualizar/${id}`, {
+        const response = await fetch(`${API_URL}/pokemon/actualizar/${id}`, {
             method: "PUT",
-            body: formData,  // ✅ Enviar FormData
+            body: formData,  // Enviar FormData correctamente
         });
 
         if (!response.ok) {
@@ -77,13 +77,4 @@ export const editarPokemon = async (id, formData) => {
         console.error("Error al editar el Pokémon:", error);
     }
 };
-
-//Conectar con el backend para que Render funcione
-const apiUrl = import.meta.env.VITE_API_URL;
-
-fetch(`${apiUrl}/pokemon`)
-    .then(response => response.json())
-    .then(data => console.log(data));
-
-
 
