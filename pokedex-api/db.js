@@ -4,10 +4,7 @@ dotenv.config();
 import { MongoClient, ObjectId } from "mongodb";
 
 function conectar() {
-    return MongoClient.connect(process.env.MONGO_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+    return MongoClient.connect(process.env.MONGO_URL);
 }
 
 export function leerPokemon() {

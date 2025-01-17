@@ -147,9 +147,7 @@ servidor.use((req, res) => {
     res.status(404).json({ error: "Recurso no encontrado" });
 });
 
-servidor.listen(process.env.PORT || 4000, () => {
-    console.log(`Servidor corriendo en http://localhost:${process.env.PORT || 4000}`);
-});
+servidor.listen(process.env.PORT);
 
 
 
