@@ -121,9 +121,9 @@ servidor.delete("/pokemon/borrar/:id([0-9a-f]{24})", async (req, res) => {
 
             if (fs.existsSync(imagePath)) {
                 await fs.promises.unlink(imagePath);
-                console.log(`🗑️ Imagen eliminada correctamente: ${imagePath}`);
+                console.log(`Imagen eliminada correctamente: ${imagePath}`);
             } else {
-                console.warn(`⚠️ La imagen no existe: ${imagePath}`);
+                console.warn(`La imagen no existe: ${imagePath}`);
             }
             
         }

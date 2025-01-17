@@ -3,8 +3,11 @@ dotenv.config();
 
 import { MongoClient, ObjectId } from "mongodb";
 
-function conectar(){
-    return MongoClient.connect(process.env.MONGO_URL)
+function conectar() {
+    return MongoClient.connect(process.env.MONGO_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
 }
 
 export function leerPokemon() {
@@ -26,6 +29,7 @@ export function leerPokemon() {
 
             ok(pokemons);
         } catch (error) {
+            console.error("Error detallado al leer la base de datos:", error);  
             ko({ error: "Error al leer la base de datos" });
         } finally {
             if (conexion) {
@@ -34,6 +38,7 @@ export function leerPokemon() {
         }
     });
 }
+
 
 
 export function crearPokemon(pokemon) {
