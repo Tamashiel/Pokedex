@@ -49,64 +49,65 @@ const CreatePokemonForm = ({ onPokemonCreated }) => {
 
     const handlePosicionChange = (e) => {
         const value = e.target.value;
-        if (value === "" || parseInt(value) < 1) {
-            setPosicion(1);
-        } else {
-            setPosicion(parseInt(value));
+        // Permitir el campo vacío o valores numéricos mayores o iguales a 1
+        if (value === "" || /^[0-9]*$/.test(value)) {
+            setPosicion(value);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="pokemon-form">
-            <h2>Agregar un Pokémon</h2>
-            <div className="form-group">
-                <label>Nombre</label>
-                <input
-                    type="text"
-                    placeholder="Nombre"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                    required
-                />
-            </div>
+        <div className="form-container">
+            <form onSubmit={handleSubmit} className="pokemon-form">
+                <h2>Agregar un Pokémon</h2>
+                <div className="form-group">
+                    <label>Nombre</label>
+                    <input
+                        type="text"
+                        placeholder="Nombre"
+                        value={nombre}
+                        onChange={(e) => setNombre(e.target.value)}
+                        required
+                    />
+                </div>
 
-            <div className="form-group">
-                <label>Tipo</label>
-                <input
-                    type="text"
-                    placeholder="Tipo"
-                    value={tipo}
-                    onChange={(e) => setTipo(e.target.value)}
-                    required
-                />
-            </div>
+                <div className="form-group">
+                    <label>Tipo</label>
+                    <input
+                        type="text"
+                        placeholder="Tipo"
+                        value={tipo}
+                        onChange={(e) => setTipo(e.target.value)}
+                        required
+                    />
+                </div>
 
-            <div className="form-group">
-                <label>Posición</label>
-                <input
-                    type="number"
-                    placeholder="Posición"
-                    value={posicion}
-                    onChange={handlePosicionChange}
-                    min="1"
-                    step="1"
-                    required
-                />
-            </div>
+                <div className="form-group">
+                    <label>Posición</label>
+                    <input
+                        type="number"
+                        placeholder="Posición"
+                        value={posicion}
+                        onChange={handlePosicionChange}
+                        min="1"
+                        step="1"
+                        required
+                    />
+                </div>
 
-            <div className="form-group">
-                <label>Imagen</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setImagen(e.target.files[0])}
-                    ref={fileInputRef}
-                    required
-                />
-            </div>
+                <div className="form-group">
+                    <label>Imagen</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setImagen(e.target.files[0])}
+                        ref={fileInputRef}
+                        required
+                    />
+                </div>
 
-            <button type="submit" className="btn-submit">Agregar Pokémon</button>
-        </form>
+                <button type="submit" className="btn-submit">Agregar Pokémon</button>
+            </form>
+        </div>
     );
 };
 

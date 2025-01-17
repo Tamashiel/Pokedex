@@ -13,30 +13,15 @@ const App = () => {
     return (
         <div className="background-container">
             <div className="content-container">
-                <header className="header">
-                    <h1 className="main-title">Mi Pokédex</h1>
-                </header>
-
-                <section className="form-section">
-                    {/*Pasamos la función correctamente */}
-                    <CreatePokemonForm onPokemonCreated={handlePokemonCreated} />
-                </section>
-
-                <section className="list-section">
-                    {/*Pasamos el valor al listado */}
-                    <PokemonList actualizar={actualizar} />
-                </section>
+            <img src="/public/logo.png" alt="logo" className="logo" />
+                <CreatePokemonForm onPokemonCreated={handlePokemonCreated} />
+                <PokemonList actualizar={actualizar} />
             </div>
         </div>
     );
 };
 
 export default App;
-
-
-
-
-
 
 
 

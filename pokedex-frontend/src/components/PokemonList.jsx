@@ -45,8 +45,8 @@ const PokemonList = ({ actualizar }) => {
 
     return (
         <div>
-            <h2>Lista de Pokémon</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center", position: "sticky", top: "150px" }}>
+            <h2 className="title-listaPokemon">Lista de Pokémon</h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
                 {pokemons.map((pokemon) => (
                     <PokemonCard
                         key={pokemon.id}
